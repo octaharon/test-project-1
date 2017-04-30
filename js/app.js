@@ -1,11 +1,26 @@
 require('../sass/app.scss');
 
+import 'font-awesome/scss/font-awesome.scss';
 import restful, {fetchBackend} from 'restful.js';
 import React from 'react';
-import ReactDom from 'react-dom';
+import ReactDOM from 'react-dom';
+import cookie from 'react-cookie';
+import ReactSpinner from 'react-spinjs';
 import UserForm from './UserForm';
+import GroupList from './GroupList'
 
-class app extends React.Component {
+/**
+ * Prototype.js is back!
+ */
+var $ = id => document.getElementById(id);
+Element.prototype.hide = function () {
+    this.style.visibility = 'hidden';
+};
+Element.prototype.show = function () {
+    this.style.visibility = 'visible';
+};
+
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,6 +28,10 @@ class app extends React.Component {
 
         };
         this.api = restful('http://104.196.12.181', fetchBackend(fetch));
+    }
+
+    componentDidMount() {
+        $('modal-backdrop').hide();
     }
 
     autoSave() {
@@ -44,12 +63,20 @@ class app extends React.Component {
 
     render() {
         return (
-            <UserForm app={this}/>
+            <div className="wrapper">
+                <div id="modal-backdrop">
+                    <ReactSpinner />
+                </div>
+                <UserForm app={this}/>
+                <GroupList uuid={this.state.UUID}/>
+            </div>
         );
     }
 }
 
-ReactDOM.render(<app />, document.getElementById('app'));
+ReactDOM.render(
+    <App />,
+    document.getElementById('app'));
 
 
 

@@ -1,3 +1,11 @@
+body, html, div, p, img, a {
+  margin: 0;
+  padding: 0;
+}
+
+div {
+  box-sizing: border-box;
+}
 
 $textColor: #333333;
 $linkColor: #000099;
@@ -5,7 +13,10 @@ $hoverColor: #4889ff;
 $errorColor: #CC0000;
 $textLightColor: #999999;
 $borderColor: #CCCCCC;
-$highlightColor: #dbf3ff;
+$highlightColor: #ebfaff;
+
+$responsiveBreakpoint: 400px;
+$responsiveBreakpointLarge: 1300px;
 
 @mixin gradient-horizontal($start-color: #555, $end-color: #333, $start-percent: 0%, $end-percent: 100%) {
   background-image: -webkit-linear-gradient(left, $start-color $start-percent, $end-color $end-percent); // Safari 5.1-6, Chrome 10+
@@ -50,4 +61,17 @@ $highlightColor: #dbf3ff;
   background-image: -webkit-radial-gradient(circle, $inner-color, $outer-color);
   background-image: radial-gradient(circle, $inner-color, $outer-color);
   background-repeat: no-repeat;
+}
+
+@mixin vertical-center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  height: 50%;
+  transform: translate(-50%, -50%);
 }

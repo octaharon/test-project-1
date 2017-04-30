@@ -1,16 +1,11 @@
-body, html, div, p, img, a {
-  margin: 0;
-  padding: 0;
-}
-
 @import "mixins";
-
 
 body {
   background: #FFF;
-  font-family: Arial, sans-serif;
+  font-family: "Times New Roman", serif;
   font-size: 16px;
   color: $textColor;
+  min-width: $responsiveBreakpoint;
 }
 
 a {
@@ -24,21 +19,26 @@ a {
 
 .button, .tag {
   display: inline-block;
-  background-color: $linkColor;
-  color: $highlightColor;
-  &:hover {
-    @include gradient-vertical($highlightColor, $hoverColor);
-    color: $textColor;
-  }
+  text-align: center;
+  font-family: "Verdana", sans-serif;
 }
 
 .button {
-  padding: 10px 20px;
-  border-radius: 10px;
-  text-align: center;
+  padding: 10px 20px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  @include gradient-vertical($linkColor, $hoverColor);
+
+  color: $highlightColor;
+  &:hover {
+    background: $linkColor;
+    color: #FFFFFF;
+  }
 }
 
 .tag {
+  background-color: $highlightColor;
   padding: 5px;
   border-radius: 5px;
   font-size: 14px;
@@ -47,11 +47,14 @@ a {
 input {
   border: none;
   color: $textColor;
-  padding: 5px;
+  font-family: "Verdana", sans-serif;
+  padding: 5px 0px;
+  font-size: 16px;
   border-bottom: 1px $borderColor solid;
   &:focus {
     border-bottom-color: $textLightColor;
     background: $highlightColor;
+    outline: none;
   }
 
   &.error {
@@ -61,3 +64,10 @@ input {
   max-width: 300px;
 }
 
+#modal-backdrop {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.7);
+  width: 100vw;
+  height: 100vh;
+}

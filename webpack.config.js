@@ -17,7 +17,7 @@ module.exports = {
     },
     output: {
         publicPath: 'http://localhost:8080/',
-        filename: 'web/[name].js'
+        filename: './web/[name].js'
     },
     module: {
         loaders: [
@@ -31,7 +31,7 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                test: /\.scss$/,
+                test: /\.(scss|css)$/,
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
@@ -39,12 +39,16 @@ module.exports = {
                         'sass-loader'
                     ]
                 })
+            },
+            {
+                test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+                loader: 'url-loader'
             }
         ]
     },
     plugins: [
         new ExtractTextPlugin({
-            filename: 'web/style.css',
+            filename: './web/style.css',
             allChunks: true
         })
     ]

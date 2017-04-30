@@ -8,8 +8,13 @@ class UserForm extends React.Component {
             firstName: props.firstName || '',
             lastName: props.lastName || '',
             email: props.email || '',
+            UUID: null,
             revalidate: false
         };
+        if (props.app && props.app.state.UUID)
+            this.setState({
+                UUID: props.app.state.UUID
+            })
     }
 
 
@@ -29,8 +34,9 @@ class UserForm extends React.Component {
 
 
     isValidForm() {
-        for (key of Object.keys(this.state)) {
-            if (!this.isValidField(key))
+        this.setState({revalidate: true});
+        for (let item of Object.keys(this.state)) {
+            if (!this.isValidField(item))
                 return false;
         }
         this.setState({revalidate: false});
@@ -40,32 +46,32 @@ class UserForm extends React.Component {
     render() {
         return (
             <div className="user-form">
-                <div className="user-field">
-                    <label for="user-email">E-Mail</label>
+                 <div className="user-field">
+                    <label htmlFor="user-email">E-Mail</label>
                     <input type="text" id="user-email" value={this.state.email}
                            onChange={this.onEmailChange.bind(this)}/>
-                    {this.state.revalidate && !isValidField('email') &&
+                    {this.state.revalidate && !this.isValidField('email') &&
                     <span className='error'>Invalid e-mail</span>
                     }
                 </div>
                 <div className="user-field">
-                    <label for="user-firstname">First name</label>
+                    <label htmlFor="user-firstname">First name</label>
                     <input type="text" id="user-firstname" value={this.state.firstName}
                            onChange={this.onFirstNameChange.bind(this)}/>
-                    {this.state.revalidate && !isValidField('firstName') &&
+                    {this.state.revalidate && !this.isValidField('firstName') &&
                     <span className='error'>First name can't be empty</span>
                     }
                 </div>
                 <div className="user-field">
-                    <label for="user-firstname">Last name</label>
+                    <label htmlFor="user-firstname">Last name</label>
                     <input type="text" id="user-lastname" value={this.state.lastName}
                            onChange={this.onLastNameChange.bind(this)}/>
-                    {this.state.revalidate && !isValidField('lastName') &&
+                    {this.state.revalidate && !this.isValidField('lastName') &&
                     <span className='error'>Last name can't be empty</span>
                     }
                 </div>
-                {this.props.app && !this.props.app.state.UUID &&
-                <div className="user-field">
+                {!this.state.UUID &&
+                <div className="user-field collapse">
                     <div className="button" onClick={this.signUp.bind(this)}>Sign up</div>
                 </div>
                 }
@@ -75,26 +81,31 @@ class UserForm extends React.Component {
 
     onFirstNameChange(e) {
         this.setState({
-            firstName: e.target.value.trim().replace(/\s+/, ' '),
-            revalidate: true
+            firstName: e.target.value.trim().replace(/\s+/, ' ')
         });
+        if (this.state.UUID)
+            this.setState({revalidate: true});
     }
 
     onLastNameChange(e) {
         this.setState({
             lastName: e.target.value.trim().replace(/\s+/, ' '),
-            revalidate: true
         });
+        if (this.state.UUID)
+            this.setState({revalidate: true});
     }
 
     onEmailChange(e) {
         this.setState({
             email: e.target.value.trim().replace(/\s+/, ''),
-            revalidate: true
         });
+        if (this.state.UUID)
+            this.setState({revalidate: true});
     }
 
     signUp(e) {
+        if (this.state.UUID)
+            return false;
         if (this.isValidForm() && this.props.app) {
             this.props.app.signUp(this.state);
         }
