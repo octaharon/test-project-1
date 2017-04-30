@@ -1,0 +1,53 @@
+{
+  "name": "react-frontend-tc",
+  "version": "0.0.1",
+  "description": "Test project for twittercounter",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -p 3000 .",
+    "build": "NODE_ENV=production webpack -p",
+    "watch": "webpack-dev-server --hot --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:octaharon/test-project-1.git"
+  },
+  "keywords": [
+    "webpack",
+    "react",
+    "ecmascript6",
+    "react-hot-loader",
+    "sass"
+  ],
+  "author": "Alexander Uskov <neolord.tmb@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/jpetitcolas/webpack-react",
+  "devDependencies": {
+    "css-loader": "^0.28.0",
+    "expect": "^1.20.0",
+    "extract-text-webpack-plugin": "^2.0.0",
+    "http-server": "^0.9.0",
+    "jsx-loader": "^0.13.2",
+    "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-sourcemap-loader": "^0.3.4",
+    "karma-webpack": "^2.0.0",
+    "mocha": "^3.3.0",
+    "node-libs-browser": "^2.0.0",
+    "node-sass": "^4.5.2",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-hot-loader": "^1.3.0",
+    "restful.js": "^0.9.6",
+    "sass-loader": "^6.0.0",
+    "style-loader": "^0.16.1",
+    "webpack": "^2.4.0",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "babel-core": "^5.3.3",
+    "babel-loader": "^5.0.0"
+  }
+}

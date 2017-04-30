@@ -1,0 +1,25 @@
+@import "mixins";
+
+.user-form {
+  border-bottom: 2px $borderColor solid;
+  padding: 20px;
+  width: 100%;
+
+  .user-field {
+    display: inline-block;
+    margin-bottom: 10px;
+    float: left;
+    width: 100%;
+    max-width: 480px;
+
+    input {
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: $textLightColor;
+    }
+  }
+}
