@@ -1,11 +1,23 @@
 require('../sass/ItemList.scss');
 import React from 'react';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+    list: PropTypes.array.isRequired,
+    title: PropTypes.string,
+    spacesAllowed: PropTypes.bool,
+    onAddToList: PropTypes.func.isRequired,
+    onRemoveFromList: PropTypes.func.isRequired,
+    onValidate: PropTypes.func.isRequired
+};
 
 /**
  * @property list
  * @property title
+ * @property spacesAllowed
  * @property onAddToList
  * @property onRemoveFromList
+ * @property onValidate
  */
 class ItemList extends React.Component {
     constructor(props) {
@@ -18,17 +30,22 @@ class ItemList extends React.Component {
 
 
     onChange(e) {
-        let value = e.target.value = e.target.value.trim().toLowerCase();
+        let value = e.target.value;
+        if (this.props.spacesAllowed === false)
+            value = value.trim();
+        else
+            value = value.replace('/^\s+', '');
+        value = value.toLocaleLowerCase();
         this.setState({
             newValue: value,
-            canAdd: value.length > 0 && !this.isInList(value)
+            canAdd: this.props.onValidate(value)
         });
     }
 
     newItem(e) {
         if (this.state.canAdd && this.props.onAddToList instanceof Function)
-            if (this.props.onAddToList(this.state.newValue) !== false) {
-                this.setState({newValue: ''});
+            if (this.props.onAddToList(this.state.newValue.trim()) !== false) {
+                this.setState({newValue: '', canAdd: false});
             }
         return false;
     }
@@ -41,7 +58,7 @@ class ItemList extends React.Component {
 
     render() {
         let listItems = this.props.list.map((value) =>
-            <li className="tag">
+            <li className="tag" key={value}>
                 <a href="javascript:;" className="fa fa-times"
                    onClick={this.removeItem.bind(this, value)}>&nbsp;</a>
                 <span>{value}</span>
@@ -60,7 +77,7 @@ class ItemList extends React.Component {
                     {this.props.list.length ? (
                             <ul>{listItems}</ul>
                         ) : (
-                            <span class="empty">List is empty</span>
+                            <span className="empty">List is empty</span>
                         )
                     }
                 </div>
@@ -70,6 +87,8 @@ class ItemList extends React.Component {
 
 
 }
+
+ItemList.propTypes = propTypes;
 
 export default ItemList;
 

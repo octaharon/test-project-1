@@ -1,74 +1,66 @@
 require('../sass/app.scss');
 
 import 'font-awesome/scss/font-awesome.scss';
-import restful, {fetchBackend} from 'restful.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import cookie from 'react-cookie';
+import Cookies from 'universal-cookie';
 import ReactSpinner from 'react-spinjs';
 import UserForm from './UserForm';
+import API from './API';
 import GroupList from './GroupList'
 
-/**
- * Prototype.js is back!
- */
-var $ = id => document.getElementById(id);
-Element.prototype.hide = function () {
-    this.style.visibility = 'hidden';
-};
-Element.prototype.show = function () {
-    this.style.visibility = 'visible';
-};
+const AuthExpirationTime = 24 * 60 * 60 * 1000; //ms
+const cookies = new Cookies();
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             UUID: null
-
         };
-        this.api = restful('http://104.196.12.181', fetchBackend(fetch));
+        API.on('request', function () {
+            this.setState({loading: true});
+        }.bind(this));
+        API.on('response', function () {
+            this.setState({loading: false});
+        }.bind(this));
+        API.on('error', function () {
+            this.setState({loading: false});
+        }.bind(this));
+
     }
 
     componentDidMount() {
-        $('modal-backdrop').hide();
-    }
-
-    autoSave() {
-        console.log('saving');
-    }
-
-    signUp(data) {
-        console.log(data);
-        this.setState({
-            UUID: this.getUUID()
-        });
-        this.autoSave();
-    }
-
-    // rfc4122, version 4 form
-    getUUID() {
-        let chars = '0123456789ABCDEF', uuid = [], i, r;
-        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-        uuid[14] = '4';
-        for (i = 0; i < 36; i++) {
-            if (!uuid[i]) {
-                r = 0 | Math.random() * 16;
-                uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
-            }
+        this.setState({loading: false});
+        let UUID = cookies.get('UUID');
+        if (UUID) {
+            this.setState({UUID});
         }
-
-        return uuid.join('');
     }
+
+    signUp(UUID) {
+        if (UUID === null) //Clear authentication
+        {
+            cookies.remove('UUID', {path: '/'});
+            this.setState({UUID: null});
+            return true;
+        }
+        cookies.set('UUID', UUID, {path: '/', expires: new Date(Date.now() + AuthExpirationTime)});
+        this.setState({UUID});
+    }
+
 
     render() {
         return (
             <div className="wrapper">
-                <div id="modal-backdrop">
+                <div id="modal-backdrop" style={this.state.loading ? {} : {display: 'none'}}>
                     <ReactSpinner />
                 </div>
-                <UserForm app={this}/>
-                <GroupList uuid={this.state.UUID}/>
+                <UserForm UUID={this.state.UUID} onSignup={this.signUp.bind(this)}/>
+                {this.state.UUID != null &&
+                <GroupList UUID={this.state.UUID}/>
+                }
             </div>
         );
     }

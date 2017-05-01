@@ -1,2 +1,32 @@
 @import "mixins";
 
+.match-group {
+  margin-bottom: 10px;
+  margin-top: 20px;
+
+  .match-group-title {
+    label {
+      display: block;
+      .fa {
+        &:first-child {
+          margin-left: 0;
+          margin-bottom: 2px;
+        }
+
+        &.fa-folder-o, &.fa-folder-open-o {
+          margin-bottom: -1px;
+        }
+
+        margin-bottom: 0px;
+        margin-left: 10px;
+        vertical-align: text-bottom;
+      }
+    }
+    input {
+      margin-left: 5px;
+      vertical-align: text-bottom;
+      width: 280px;
+      margin-top: 5px;
+    }
+  }
+}

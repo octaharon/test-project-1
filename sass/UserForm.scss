@@ -10,8 +10,7 @@
     display: inline-block;
     position: relative;
     margin-right: 20px;
-    min-height: 75px;
-    margin-bottom: 20px;
+    min-height: 80px;
     width: 100%;
     max-width: $responsiveBreakpoint;
 
@@ -20,15 +19,22 @@
       margin-right: 0 !important;
       &.collapse {
         clear: both;
+        margin-top: 20px;
         display: block;
         min-height: 10px;
+        float: none;
+
+        a {
+          margin-top: -20px;
+        }
+
       }
     }
 
     @media (max-width: $responsiveBreakpointLarge) {
       max-width: 47%;
       margin-right: 2%;
-
+      margin-bottom: 20px;
     }
 
     .button {
@@ -38,12 +44,21 @@
 
     &.collapse {
       width: auto;
+      max-width: 80px;
+      a {
+        .fa {
+          display: inline-block;
+        }
+        white-space: nowrap;
+        @include vertical-center();
+      }
     }
 
     .error {
       font-size: 14px;
       display: block;
       margin-top: 10px;
+      font-style: italic;
       color: $errorColor;
     }
 
@@ -54,10 +69,7 @@
 
     label {
       display: block;
-      font-weight: bold;
-      font-size: 14px;
       margin-bottom: 5px;
-      color: $textLightColor;
     }
   }
 }

@@ -5,7 +5,7 @@ body {
   font-family: "Times New Roman", serif;
   font-size: 16px;
   color: $textColor;
-  min-width: $responsiveBreakpoint;
+  min-width: 340px;
 }
 
 a {
@@ -17,13 +17,10 @@ a {
   }
 }
 
-.button, .tag {
+.button {
   display: inline-block;
   text-align: center;
   font-family: "Verdana", sans-serif;
-}
-
-.button {
   padding: 10px 20px 12px;
   border-radius: 20px;
   cursor: pointer;
@@ -37,11 +34,15 @@ a {
   }
 }
 
-.tag {
-  background-color: $highlightColor;
-  padding: 5px;
-  border-radius: 5px;
+
+label {
+  font-weight: bold;
   font-size: 14px;
+  color: $textLightColor;
+
+  span {
+    color: $textColor;
+  }
 }
 
 input {
@@ -62,6 +63,22 @@ input {
   }
 
   max-width: 300px;
+}
+
+.fa {
+  text-decoration: none !important;
+  vertical-align: bottom;
+  margin-bottom: 2px;
+  outline: none !important;
+
+  &.active {
+    color: $errorColor;
+    cursor: default !important;
+    &:before {
+      border-bottom: 1px $errorColor solid;
+    }
+
+  }
 }
 
 #modal-backdrop {

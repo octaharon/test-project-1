@@ -1,2 +1,60 @@
 @import "mixins";
 
+.item-list {
+  margin-top: 20px;
+
+  .item-list-title {
+    font-family: "Verdana", sans-serif;
+    margin-bottom: 5px;
+  }
+
+  .item-list-add {
+    .fa {
+      margin-left: 5px;
+    }
+  }
+
+  .item-list-items {
+    font-family: Verdana, sans-serif;
+    padding: 20px 0px 0px;
+
+    ul, li {
+      list-style: none;
+      margin: 0;
+    }
+
+    ul, span.empty {
+      padding: 0;
+      line-height: 1.5;
+    }
+
+    li.tag {
+      margin-right: 10px;
+      background: $borderColor;
+      color: $textColor;
+      font-size: 14px;
+      border-radius: 5px;
+      padding: 5px 10px;
+      vertical-align: middle;
+      display: inline-block;
+
+      .fa {
+        color: $textColor;
+        font-size: 16px;
+        margin-bottom: 0px;
+        vertical-align: text-top;
+        &:hover {
+          color: $errorColor;
+        }
+      }
+
+    }
+
+    span.empty {
+      font-size: 14px;
+      color: $textLightColor;
+      font-style: italic;
+    }
+  }
+}
+

@@ -1,2 +1,35 @@
 @import "mixins";
 
+.match-groups {
+  padding: 10px 20px;
+
+  .fa {
+    font-size: 20px;
+  }
+
+  & > div {
+    width: 100%;
+  }
+
+  .match-group-header {
+    font-size: 24px;
+    margin: 10px 0px 20px;
+    color: $textColor;
+    font-family: "Times New Roman", serif;
+  }
+  .match-group-new {
+    input {
+      margin-left: 10px;
+      vertical-align: text-bottom;
+    }
+
+    .fa {
+      margin-left: 10px;
+    }
+  }
+
+  .match-group-items {
+    margin-top: 10px;
+  }
+}
+

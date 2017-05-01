@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "http-server -p 3000 .",
+    "buildWin": "set NODE_ENV=production webpack -p",
     "build": "NODE_ENV=production webpack -p",
     "watch": "webpack-dev-server --hot --progress --colors"
   },
@@ -22,7 +23,6 @@
   ],
   "author": "Alexander Uskov <neolord.tmb@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/jpetitcolas/webpack-react",
   "devDependencies": {
     "classnames": "^2.2.5",
     "css-loader": "^0.28.0",
@@ -40,6 +40,7 @@
     "mocha": "^3.3.0",
     "node-libs-browser": "^2.0.0",
     "node-sass": "^4.5.2",
+    "prop-types": "^15.5.8",
     "react": "^15.3.2",
     "react-cookie": "^2.0.6",
     "react-dom": "^15.3.2",
