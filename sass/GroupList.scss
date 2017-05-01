@@ -29,6 +29,9 @@
   }
 
   .match-group-items {
+    border-left: 10px $highlightColor solid;
+    padding-left: 10px;
+    margin-left: 1px;
     margin-top: 10px;
   }
 }

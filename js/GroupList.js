@@ -66,67 +66,57 @@ class GroupList extends React.Component {
         };
         this.api.one('userconfig', this.props.UUID).put(data).then(function (response) {
             console.log('saved');
-            debugger;
         }.bind(this)).catch((err) => {
             console.log(err);
             alert("Connection error");
         });
     }
 
-    updateGroup(groupName, newData = null) {
-        newData.name = newData.name.trim();
-        if (!newData.name.length)
+    updateGroup(groupKey, newData = null) {
+        let name = newData.name.trim();
+        if (!name.length || this.groupExists(name) && name != groupKey)
             return false;
-        let twGroup = _.findWhere(this.state.twitterGroups, {name: groupName});
-        let igGroup = _.findWhere(this.state.instagramGroups, {name: groupName});
+        let twGroup = _.findWhere(this.state.twitterGroups, {name: groupKey});
+        let igGroup = _.findWhere(this.state.instagramGroups, {name: groupKey});
+        let mapping = (key, list) => {
+            let i = _.findWhere(list, {name: groupKey});
+            i.name = name;
+            i.influencers = _.uniq(_.toArray(newData[key]).map(val => val.toLocaleLowerCase()));
+            i.keywords = _.uniq(_.toArray(newData.keywords).map(val => val.toLocaleLowerCase()));
+            return list;
+        };
+        let newItem = function (key) {
+            return {
+                name: name,
+                keywords: _.toArray(newData.keywords),
+                influencers: newData[key]
+            }
+        };
         let toChange = {};
-        //the first clause of this condition will never trigger for users created via this app but can be useful for managing existing data
         if (twGroup === undefined) {
             if (newData.twInfluencers instanceof Array && newData.twInfluencers.length) {
-                twGroup = {
-                    name: newData.name,
-                    influencers: newData.twInfluencers,
-                    keywords: _.toArray(newData.keywords)
-                };
-                toChange.twitterGroups = {$push: [twGroup]};
+                toChange.twitterGroups = {$push: [newItem('twInfluencers')]};
             }
         }
         else {
             toChange.twitterGroups = {
-                $apply: item => {
-                    if (item.name == groupName) {
-                        item.name = newData.name;
-                        item.influencers = _.uniq(_.toArray(newData.twInfluencers).map(val => val.toLocaleLowerCase()));
-                        item.keywords = _.uniq(_.toArray(newData.keywords).map(val => val.toLocaleLowerCase()))
-                    }
-                }
+                $apply: mapping.bind(this, 'twInfluencers')
             }
         }
-        //same here
         if (igGroup === undefined) {
             if (newData.igInfluencers instanceof Array && newData.igInfluencers.length) {
-                igGroup = {
-                    name: newData.name,
-                    influencers: newData.igInfluencers,
-                    keywords: _.toArray(newData.keywords)
-                };
-                toChange.instagramGroups = {$push: [igGroup]};
+                toChange.instagramGroups = {$push: [newItem('igInfluencers')]};
             }
         }
         else {
             toChange.instagramGroups = {
-                $apply: item => {
-                    if (item.name == groupName) {
-                        item.name = newData.name;
-                        item.influencers = _.uniq(_.toArray(newData.igInfluencers).map(val => val.toLocaleLowerCase()));
-                        item.keywords = _.uniq(_.toArray(newData.keywords).map(val => val.toLocaleLowerCase()))
-                    }
-                }
+                $apply: mapping.bind(this, 'igInfluencers')
             }
         }
         if (Object.keys(toChange).length) {
             this.setState((state) => update(state, toChange), this.autosave);
         }
+        return true;
     }
 
     newGroup(e) {
@@ -134,17 +124,10 @@ class GroupList extends React.Component {
         if (!name.length || this.groupExists(name))
             return false;
         this.setState((state) => update(state, {
-            twitterGroups: {
+            [this.state.newGroupInfluencerType == 'twitter' ? 'twitterGroups' : 'instagramGroups']: {
                 $push: [{
                     name,
-                    "influencers": [],
-                    "keywords": []
-                }]
-            },
-            instagramGroups: {
-                $push: [{
-                    name,
-                    "influencers": [],
+                    "influencers": [this.state.newGroupInfluencer],
                     "keywords": []
                 }]
             },
@@ -275,15 +258,15 @@ class GroupList extends React.Component {
                         <input type="text" value={this.state.newGroupInfluencer}
                                onChange={this.onGroupInfluencerChange.bind(this)}/>
 
-                        <a href="javascript:;"
+                        <a href="javascript:;" tabIndex={-1}
                            className={"fa fa-twitter " + (this.state.newGroupInfluencerType == 'twitter' ? 'active' : '')}
                            onClick={this.setNewGroupInfluencerType.bind(this, 'twitter')}>&nbsp;</a>
-                        <a href="javascript:;"
+                        <a href="javascript:;" tabIndex={-1}
                            className={"fa fa-instagram " + (this.state.newGroupInfluencerType == 'instagram' ? 'active' : '')}
                            onClick={this.setNewGroupInfluencerType.bind(this, 'instagram')}>&nbsp;</a>
 
                         { this.state.canAdd &&
-                        <a href="javascript:;" className="fa fa-plus-circle"
+                        <a href="javascript:;" className="fa fa-plus-circle" tabIndex={-1}
                            onClick={this.newGroup.bind(this)}>&nbsp;</a>
                         }
                     </form>

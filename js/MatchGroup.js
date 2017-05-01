@@ -35,7 +35,8 @@ class MatchGroup extends React.Component {
             igInfluencers: this.props.instagramList || [],
             keywords: this.props.keywords || [],
             expanded: this.props.expanded || false,
-            revalidate: false
+            revalidate: false,
+            invalid: false
         };
 
         //explicitly creating methods for updating particular lists
@@ -89,7 +90,8 @@ class MatchGroup extends React.Component {
 
 
     isInList(listKey, item) {
-        return item.toString().length && this.state[listKey] instanceof Array && this.state[listKey].indexOf(item) > -1;
+        item = item.toString().trim();
+        return item.length && this.state[listKey] instanceof Array && this.state[listKey].indexOf(item) > -1;
     }
 
     removeFromList(listKey, item) {
@@ -100,23 +102,31 @@ class MatchGroup extends React.Component {
             return false;
         let newList = this.state[listKey].slice();
         newList.splice(pos, 1);
+        if (!newList.length && (
+                listKey == 'igInfluencers' && !this.state.twInfluencers.length || listKey == 'twInfluencers' && !this.state.igInfluencers.length
+            )) {
+            if (window.confirm(`You're about to remove the last influencer in this group, this will remove the group itself. Commit with removal?`)) {
+                return this.removeGroup(undefined, true);
+            }
+            return false;
+        }
+
         this.setState((state) => update(state, {
             [listKey]: {$set: newList}
         }), this.autosave.bind(this, true));
-        return this;
+        return true;
     }
 
     onNameChange(e) {
         let name = e.target.value.replace(/^\s+/, '');
         if (!name.length)
             return false;
-        this.setState({name, revalidate: true});
+        this.setState({name, revalidate: true, invalid: false});
     }
 
-    removeGroup(e) {
-        e.preventDefault();
+    removeGroup(e, force) {
         if (this.props.onDelete instanceof Function) {
-            if (window.confirm("Delete group " + this.state.name))
+            if (force == true || window.confirm(`Delete group "${this.state.name}"?`))
                 return this.props.onDelete();
         }
         return false;
@@ -128,10 +138,22 @@ class MatchGroup extends React.Component {
         });
     }
 
+    keyHandler(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            this.autosave(e);
+        }
+    }
+
     autosave(force) {
         let name = this.state.name.trim();
         if (name.length && this.props.onChange instanceof Function && (this.state.revalidate || force == true))
-            this.setState({revalidate: false, name}, this.props.onChange(this.state));
+            this.setState({name}, () => {
+                if (this.props.onChange(this.state) === false)
+                    this.setState({invalid: true, revalidate: true});
+                else
+                    this.setState({invalid: false, revalidate: false});
+            });
     }
 
     render() {
@@ -140,12 +162,18 @@ class MatchGroup extends React.Component {
                 <div className="match-group-title">
                     <label>
                         <span
-                            className={"fa " + (this.state.expanded ? "fa-caret-down" : "fa-caret-right")}>&nbsp;</span>
-                        <input type="text" className={(!this.state.name.length ? 'error' : '')} value={this.state.name}
-                               onChange={this.onNameChange.bind(this)} onBlur={this.autosave.bind(this)}/>
-                        <a href="javascript:;" title="delete group" className="fa fa-trash-o"
+                            className={"fa " + (this.state.expanded ? "fa-caret-down" : "fa-caret-right")}
+                            onClick={this.toggle.bind(this)}>
+                        </span>
+                        <input type="text" className={(this.state.invalid ? 'error' : '')} value={this.state.name}
+                               onChange={this.onNameChange.bind(this)}
+                               onKeyDown={this.keyHandler.bind(this)}
+                               onBlur={this.autosave.bind(this)}/>
+                        <a href="javascript:;" title="delete group"
+                           className="fa fa-trash-o" tabIndex={-1}
                            onClick={this.removeGroup.bind(this)}>&nbsp;</a>
                         <a href="javascript:;" title={this.state.expanded ? "Collapse contents" : "Show contents"}
+                           tabIndex={-1}
                            className={"fa " + (this.state.expanded ? "fa-folder-open-o" : "fa-folder-o")}
                            onClick={this.toggle.bind(this)}>&nbsp;</a>
                     </label>
@@ -153,11 +181,13 @@ class MatchGroup extends React.Component {
                 </div>
                 <div className="match-group-items" style={this.state.expanded ? {} : {display: 'none'}}>
                     <ItemList title="Twitter influencers" list={this.state.twInfluencers}
+                              spacesAllowed={false}
                               onAddToList={this.addToTwitter}
                               onRemoveFromList={this.removeFromTwitter}
                               onValidate={this.validateTwitter.bind(this)}
                     />
                     <ItemList title="Instagram influencers" list={this.state.igInfluencers}
+                              spacesAllowed={false}
                               onAddToList={this.addToInstagram}
                               onRemoveFromList={this.removeFromInstagram}
                               onValidate={this.validateInstagram.bind(this)}

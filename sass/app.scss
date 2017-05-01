@@ -34,7 +34,6 @@ a {
   }
 }
 
-
 label {
   font-weight: bold;
   font-size: 14px;
@@ -60,6 +59,7 @@ input {
 
   &.error {
     border-color: $errorColor;
+    color: $errorColor;
   }
 
   max-width: 300px;
@@ -70,6 +70,7 @@ input {
   vertical-align: bottom;
   margin-bottom: 2px;
   outline: none !important;
+  user-select: none;
 
   &.active {
     color: $errorColor;

@@ -3,9 +3,11 @@
 .match-group {
   margin-bottom: 10px;
   margin-top: 20px;
+  line-height: 1.5;
 
   .match-group-title {
     label {
+      line-height: 2.0;
       display: block;
       .fa {
         &:first-child {
