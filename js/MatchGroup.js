@@ -169,6 +169,7 @@ class MatchGroup extends React.Component {
                                onChange={this.onNameChange.bind(this)}
                                onKeyDown={this.keyHandler.bind(this)}
                                onBlur={this.autosave.bind(this)}/>
+                        <span className="nowrap">
                         <a href="javascript:;" title="delete group"
                            className="fa fa-trash-o" tabIndex={-1}
                            onClick={this.removeGroup.bind(this)}>&nbsp;</a>
@@ -176,6 +177,7 @@ class MatchGroup extends React.Component {
                            tabIndex={-1}
                            className={"fa " + (this.state.expanded ? "fa-folder-open-o" : "fa-folder-o")}
                            onClick={this.toggle.bind(this)}>&nbsp;</a>
+                        </span>
                     </label>
 
                 </div>

@@ -257,7 +257,7 @@ class GroupList extends React.Component {
                             influencer: </label>
                         <input type="text" value={this.state.newGroupInfluencer}
                                onChange={this.onGroupInfluencerChange.bind(this)}/>
-
+                        <span className="nowrap">
                         <a href="javascript:;" tabIndex={-1}
                            className={"fa fa-twitter " + (this.state.newGroupInfluencerType == 'twitter' ? 'active' : '')}
                            onClick={this.setNewGroupInfluencerType.bind(this, 'twitter')}>&nbsp;</a>
@@ -265,10 +265,12 @@ class GroupList extends React.Component {
                            className={"fa fa-instagram " + (this.state.newGroupInfluencerType == 'instagram' ? 'active' : '')}
                            onClick={this.setNewGroupInfluencerType.bind(this, 'instagram')}>&nbsp;</a>
 
-                        { this.state.canAdd &&
-                        <a href="javascript:;" className="fa fa-plus-circle" tabIndex={-1}
-                           onClick={this.newGroup.bind(this)}>&nbsp;</a>
-                        }
+                            { this.state.canAdd &&
+                            <a href="javascript:;" className="fa fa-plus-circle" tabIndex={-1}
+                               onClick={this.newGroup.bind(this)}>&nbsp;</a>
+                            }
+
+                        </span>
                     </form>
                 </div>
                 <div className="match-group-list">

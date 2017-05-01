@@ -48,7 +48,7 @@ input {
   border: none;
   color: $textColor;
   font-family: "Verdana", sans-serif;
-  padding: 5px 0px;
+  padding: 5px;
   font-size: 16px;
   border-bottom: 1px $borderColor solid;
   &:focus {
@@ -80,6 +80,11 @@ input {
     }
 
   }
+}
+
+.nowrap {
+  white-space: nowrap;
+  display:inline-block;
 }
 
 #modal-backdrop {

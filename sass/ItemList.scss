@@ -12,6 +12,13 @@
   .item-list-add {
     .fa {
       margin-left: 5px;
+      vertical-align: text-bottom;
+    }
+
+    input {
+      vertical-align: text-bottom;
+      margin-left: 5px;
+      width: 180px;
     }
   }
 
@@ -35,6 +42,7 @@
       color: $textColor;
       font-size: 14px;
       border-radius: 5px;
+      margin-bottom: 10px;
       padding: 5px 10px;
       vertical-align: middle;
       display: inline-block;

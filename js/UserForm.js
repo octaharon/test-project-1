@@ -141,7 +141,6 @@ class UserForm extends React.Component {
                 let UUID = this.getUUID();
                 let {revalidate, ...request}=this.state;
                 this.apiSave(UUID).then(function (response) {
-                    console.log(response.body());
                     if (this.props.onSignup instanceof Function)
                         this.props.onSignup(UUID);
                 }.bind(this)).catch((err) => {
