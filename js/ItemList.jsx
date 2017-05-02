@@ -32,28 +32,34 @@ class ItemList extends React.Component {
     onChange(e) {
         let value = e.target.value;
         if (this.props.spacesAllowed === false)
-            value = value.replace(/\s+/, '').trim();
+            value = value.replace(/\s+/g, '').trim();
         else
-            value = value.replace(/\s+/, ' ').replace('/^\s+', '');
+            value = value.replace(/\s+/g, ' ').replace(/^\s+/, '');
         value = value.toLocaleLowerCase();
         if (/^\s+$/.test(value))
             value = '';
         e.target.value = value;
         this.setState({
             newValue: value,
-            canAdd: this.props.onValidate(value)
+            canAdd: this.canAdd(value)
         });
+    }
+
+    canAdd(value) {
+        if (this.props.onValidate instanceof Function)
+            return this.props.onValidate(value);
+        return value.toString().length > 0;
     }
 
     newItem(e) {
         let value = this.state.newValue.trim();
-        if (this.state.canAdd && this.props.onAddToList instanceof Function)
+        if (this.canAdd(value) && this.props.onAddToList instanceof Function)
             if (this.props.onAddToList(value) !== false) {
                 this.setState({newValue: '', canAdd: false});
                 return true;
             }
             else
-                this.setState({newValue: value, canAdd: this.props.onValidate(value)});
+                this.setState({newValue: value, canAdd: this.canAdd(value)});
         return false;
     }
 
@@ -73,13 +79,15 @@ class ItemList extends React.Component {
 
 
     render() {
-        let listItems = this.props.list.map((value) =>
-            <li className="tag" key={value}>
-                <a href="javascript:;" className="fa fa-times" tabIndex={-1}
-                   onClick={this.removeItem.bind(this, value)}>&nbsp;</a>
-                <span>{value}</span>
-            </li>
-        );
+        let listItems = '';
+        if (this.props.list instanceof Array)
+            listItems = this.props.list.map((value) =>
+                <li className="tag" key={value}>
+                    <a href="javascript:;" className="fa fa-times" tabIndex={-1}
+                       onClick={this.removeItem.bind(this, value)}>&nbsp;</a>
+                    <span>{value}</span>
+                </li>
+            );
         return (
             <div className="item-list">
                 <div className="item-list-title">{this.props.title}</div>
@@ -94,7 +102,7 @@ class ItemList extends React.Component {
                     </form>
                 </div>
                 <div className="item-list-items">
-                    {this.props.list.length ? (
+                    {listItems.length ? (
                             <ul>{listItems}</ul>
                         ) : (
                             <span className="empty">List is empty</span>

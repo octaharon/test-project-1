@@ -22,10 +22,9 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 loaders: [
                     'react-hot-loader',
-                    'jsx-loader',
                     'babel-loader'
                 ],
                 exclude: /node_modules/
@@ -51,6 +50,9 @@ module.exports = {
             filename: './web/style.css',
             allChunks: true
         })
-    ]
+    ],
+    resolve: {
+        extensions: ['.js', '.jsx']
+    }
 };
 

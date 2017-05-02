@@ -1,4 +1,3 @@
-import React from 'react';
 import restful, {fetchBackend} from 'restful.js';
 
 let instance = null;
