@@ -1,18 +1,6 @@
 import restful, {fetchBackend} from 'restful.js';
+import config from '../config.json';
 
-let instance = null;
-//Stateless service
-class API {
-    constructor() {
-        if (!instance) {
-            this.api = restful('http://104.196.12.181', fetchBackend(fetch));
-            instance = this;
-        }
-        return instance;
-    }
-}
+let instance = restful(config.apiBaseUrl, fetchBackend(fetch));
 
-let apiSingleton = new API();
-let api = apiSingleton.api;
-
-export default api;
+export default instance;

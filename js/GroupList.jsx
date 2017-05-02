@@ -44,7 +44,6 @@ class GroupList extends React.Component {
     loadData(UUID) {
         this.api.one('userconfig', UUID).get().then((response) => {
             let data = response.body().data();
-            console.log(data);
             this.setState({
                 twitterGroups: data.twitterMatchGroups || [],
                 instagramGroups: data.instagramMatchGroups || []

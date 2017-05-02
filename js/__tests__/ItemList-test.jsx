@@ -8,6 +8,7 @@ import ItemList from '../ItemList';
 describe("ItemList", function () {
 
     beforeEach(ConsoleHelper.watchConsole);
+    let validateConsoleErrors = false; //dirty hacks start here
 
     let hooks = {
         onAddToList: value => value,
@@ -25,6 +26,7 @@ describe("ItemList", function () {
     });
 
     it("loads without errors and shows empty list", function () {
+        validateConsoleErrors = true;
         let subject = ReactTestUtils.renderIntoDocument(
             <ItemList
                 list={[]}
@@ -33,9 +35,8 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
+
         let span = ReactTestUtils.findRenderedDOMComponentWithClass(subject, 'empty');
-        expect(propWarns.length).toEqual(0);
         expect(span.tagName).toEqual("SPAN");
         expect(span.textContent).toEqual("List is empty");
     });
@@ -50,11 +51,9 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
         let list = ReactTestUtils.findRenderedDOMComponentWithTag(subject, 'ul');
         let listItems = ReactTestUtils.scryRenderedDOMComponentsWithTag(subject, 'li');
         let header = ReactTestUtils.findRenderedDOMComponentWithClass(subject, 'item-list-title');
-        expect(propWarns.length).toEqual(0);
         expect(header.tagName).toEqual('DIV');
         expect(header.textContent).toEqual('Hello');
         expect(list).toExist();
@@ -75,10 +74,10 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
         let listItems = ReactTestUtils.scryRenderedDOMComponentsWithTag(subject, 'li');
-        expect(propWarns.length).toEqual(0);
-        ReactTestUtils.Simulate.click(listItems[1].querySelector('a'));
+        let removeBtn = listItems[1].querySelector('a');
+        expect(removeBtn).toExist();
+        ReactTestUtils.Simulate.click(removeBtn);
         expect(hookSpy.calls.length).toEqual(1);
         expect(hookSpy).toHaveBeenCalledWith('bar');
     });
@@ -93,22 +92,23 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
         let inputBar = ReactTestUtils.findRenderedDOMComponentWithClass(subject, 'item-list-add');
-        expect(propWarns.length).toEqual(0);
         expect(inputBar).toExist();
         let inputCtrl = inputBar.querySelector('input');
         expect(inputCtrl).toExist();
+
         inputCtrl.value = 'qux';
         ReactTestUtils.Simulate.change(inputCtrl);
         expect(hookSpy).toHaveBeenCalledWith('qux');
         expect(subject.state.newValue).toEqual('qux');
         let addBtn = inputBar.querySelector('a.fa-plus');
         expect(addBtn).toExist();
+
         inputCtrl.value = '';
         ReactTestUtils.Simulate.change(inputCtrl);
         addBtn = inputBar.querySelector('a.fa-plus');
         expect(addBtn).toBe(null);
+
         expect(hookSpy.calls.length).toEqual(2);
     });
 
@@ -122,15 +122,16 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
         let inputBar = ReactTestUtils.findRenderedDOMComponentWithClass(subject, 'item-list-add');
         let inputCtrl = inputBar.querySelector('input');
+
         inputCtrl.value = 'qux';
         ReactTestUtils.Simulate.change(inputCtrl);
         expect(subject.state.newValue).toEqual('qux')
         let addBtn = inputBar.querySelector('a.fa-plus');
         ReactTestUtils.Simulate.click(addBtn);
         expect(subject.state.newValue).toEqual('');
+
         inputCtrl.value = ' baz   ';
         ReactTestUtils.Simulate.change(inputCtrl);
         ReactTestUtils.Simulate.keyDown(inputCtrl, {key: "Enter", keyCode: 13, which: 13});
@@ -158,7 +159,6 @@ describe("ItemList", function () {
                 onValidate={hooks.onValidate}
             />
         );
-        let propWarns = ConsoleHelper.getErrors();
         let inputBar = ReactTestUtils.findRenderedDOMComponentWithClass(subject, 'item-list-add');
         let inputCtrl = inputBar.querySelector('input');
         inputCtrl.value = ' qux      baz  ';
@@ -175,6 +175,9 @@ describe("ItemList", function () {
 
 
     afterEach(() => {
+        let propWarns = ConsoleHelper.getErrors();
+        if (validateConsoleErrors)
+            expect(propWarns.length).toEqual(0);
         expect.restoreSpies();
     });
 });

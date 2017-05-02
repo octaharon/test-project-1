@@ -35,7 +35,7 @@ class UserForm extends React.Component {
             state.revalidate = false;
             this.setState(state);
         }).catch((err) => {
-            console.log(err);
+            console.error(err);
             alert("Connection error");
         });
     }
@@ -103,7 +103,7 @@ class UserForm extends React.Component {
         this.apiSave(this.props.UUID).then(function (response) {
             console.log('saved');
         }.bind(this)).catch((err) => {
-            console.log(err);
+            console.error(err);
             alert("Connection error");
         });
     }
@@ -144,7 +144,7 @@ class UserForm extends React.Component {
                     if (this.props.onSignup instanceof Function)
                         this.props.onSignup(UUID);
                 }.bind(this)).catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     alert("Connection error");
                 });
                 return
