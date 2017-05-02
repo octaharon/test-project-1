@@ -120,13 +120,14 @@ class GroupList extends React.Component {
 
     newGroup(e) {
         let name = this.state.newGroupName.trim();
-        if (!name.length || this.groupExists(name))
+        let influencer = this.state.newGroupInfluencer.trim();
+        if (!this.canAdd(name, influencer))
             return false;
         this.setState((state) => update(state, {
             [this.state.newGroupInfluencerType == 'twitter' ? 'twitterGroups' : 'instagramGroups']: {
                 $push: [{
                     name,
-                    "influencers": [this.state.newGroupInfluencer],
+                    "influencers": [influencer],
                     "keywords": []
                 }]
             },
