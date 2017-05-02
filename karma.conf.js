@@ -1,4 +1,5 @@
 // karma.conf.js
+var webpack = require('webpack');
 
 module.exports = function (config) {
     config.set({
@@ -22,6 +23,10 @@ module.exports = function (config) {
             resolve: {
                 extensions: ['.js', '.jsx']
             },
+            plugins: [
+                new webpack.DefinePlugin({
+                    ENV_TEST: JSON.stringify(true)
+                })],
             watch: true
         },
         webpackServer: {

@@ -1,4 +1,3 @@
-require('whatwg-fetch');
 require('../sass/app.scss');
 
 import 'font-awesome/scss/font-awesome.scss';

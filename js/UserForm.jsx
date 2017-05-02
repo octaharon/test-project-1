@@ -27,17 +27,10 @@ class UserForm extends React.Component {
         };
         this.api = API.custom('userconfig');
         this.autosave = this.autosave.bind(this);
-    }
-
-    loadData(UUID) {
-        this.api.one('info', UUID).get().then((response) => {
-            let state = response.body().data();
-            state.revalidate = false;
-            this.setState(state);
-        }).catch((err) => {
-            console.error(err);
-            alert("Connection error");
-        });
+        this.onApiLoad = this.onApiLoad.bind(this);
+        this.onApiUpdate = this.onApiUpdate.bind(this);
+        this.loadData = this.loadData.bind(this);
+        this.apiSave = this.apiSave.bind(this);
     }
 
     componentDidMount() {
@@ -49,6 +42,39 @@ class UserForm extends React.Component {
         let UUID = nextProps.UUID;
         if (UUID && UUID != this.props.UUID)
             this.loadData(UUID);
+    }
+
+    loadData(UUID) {
+        this.api.one('info', UUID).get().then(this.onApiLoad.bind(this)).catch((err) => {
+            console.error(err.toString());
+            alert("Connection error");
+        });
+    }
+
+    onApiUpdate(response) {
+        if (response && response.statusCode() == '204')
+            console.log(`Autosave successful for ${this.props.UUID || 'new user'}`);
+    }
+
+    onApiLoad(response) {
+        let state = response.body().data();
+        state.revalidate = false;
+        this.setState(state);
+        console.log(`Loaded data for ${this.props.UUID}`);
+    }
+
+    apiSave(UUID) {
+        let {revalidate, ...request}=this.state;
+        return this.api.one('info', UUID).put(request);
+    }
+
+    autosave() {
+        if (!this.props.UUID || !this.state.revalidate || !this.isValidForm())
+            return false;
+        this.apiSave(this.props.UUID).then(this.onApiUpdate.bind(this)).catch((err) => {
+            console.error(err.toString());
+            alert("Connection error");
+        });
     }
 
 
@@ -92,23 +118,6 @@ class UserForm extends React.Component {
         return uuid.join('').toLowerCase();
     }
 
-    apiSave(UUID) {
-        let {revalidate, ...request}=this.state;
-        return this.api.one('info', UUID).put(request);
-    }
-
-    autosave() {
-        if (!this.props.UUID || !this.state.revalidate || !this.isValidForm())
-            return false;
-        this.apiSave(this.props.UUID).then(function (response) {
-            console.log('saved');
-        }.bind(this)).catch((err) => {
-            console.error(err);
-            alert("Connection error");
-        });
-    }
-
-
     onFirstNameChange(e) {
         this.setState({
             firstName: e.target.value.trim().replace(/\s+/, ' ')
@@ -143,11 +152,12 @@ class UserForm extends React.Component {
                 this.apiSave(UUID).then(function (response) {
                     if (this.props.onSignup instanceof Function)
                         this.props.onSignup(UUID);
+                    this.onApiUpdate(response);
                 }.bind(this)).catch((err) => {
-                    console.error(err);
+                    console.error(err.toString());
                     alert("Connection error");
                 });
-                return
+                return true;
             }
         }
         return false;

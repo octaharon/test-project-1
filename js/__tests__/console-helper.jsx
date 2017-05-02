@@ -7,6 +7,7 @@ class ConsoleHelper {
         this.release = this.release.bind(this);
         this.getErrors = this.getErrors.bind(this);
         this.getPropWarnings = this.getPropWarnings.bind(this);
+        this.getLog = this.getLog.bind(this);
     }
 
 
@@ -14,6 +15,8 @@ class ConsoleHelper {
         this.consoleErrors = expect.spyOn(console, 'error').andCallThrough();
 
         this.consoleWarns = expect.spyOn(console, 'warn').andCallThrough();
+
+        this.consoleLog = expect.spyOn(console, 'log').andCallThrough();
     }
 
     release() {
@@ -24,7 +27,11 @@ class ConsoleHelper {
     }
 
     getErrors() {
-        return this.consoleErrors.calls.map((c) => (c.arguments && c.arguments.length) ? c.arguments[0] : null) || [];
+        return this.consoleErrors.calls.map((c) => (c.arguments && c.arguments.length) ? c.arguments.toString() : null) || [];
+    }
+
+    getLog() {
+        return this.consoleLog.calls.map((c) => (c.arguments && c.arguments.length) ? c.arguments.toString() : null) || [];
     }
 
 
