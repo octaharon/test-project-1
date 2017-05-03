@@ -1,7 +1,10 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var debug = process.env.NODE_ENV !== "production";
+if (debug)
+    console.log("running in debug mode");
 
 function getEntrySources(sources) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (debug) {
         sources.push('webpack-dev-server/client?http://localhost:8080');
         sources.push('webpack/hot/only-dev-server');
     }
