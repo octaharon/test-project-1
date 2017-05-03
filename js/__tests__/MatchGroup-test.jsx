@@ -6,17 +6,7 @@ import TestHelper from './test-helpers';
 import MatchGroup from '../MatchGroup';
 import ItemList from '../ItemList';
 
-//prototypeJS-style function interception
-Object.assign(Function.prototype, {
-    wrap: function (wrapper) {
-        let __method = this;
-        if (!wrapper instanceof Function)
-            return this;
-        return function () {
-            return wrapper.apply(this, [__method.bind(this), ...arguments]);
-        }
-    }
-});
+
 
 
 describe("MatchGroup", function () {
@@ -27,6 +17,7 @@ describe("MatchGroup", function () {
         onChange: expect.createSpy(),
         onDelete: expect.createSpy()
     };
+    TestHelper.stubComponent(ItemList);
 
     describe("propTypes validation", function () {
         it("to pass", function () {
@@ -55,6 +46,8 @@ describe("MatchGroup", function () {
         kw: []
     };
 
+
+
     beforeEach(() => {
         validateConsoleErrors = true;
         hooks = {
@@ -65,7 +58,6 @@ describe("MatchGroup", function () {
             return allowDelete;
         });
         ConsoleHelper.watchConsole();
-        TestHelper.stubComponent(ItemList);
         subject = ReactTestUtils.renderIntoDocument(<MatchGroup
             onChange={hooks.onChange}
             onDelete={hooks.onDelete}
@@ -266,8 +258,5 @@ describe("MatchGroup", function () {
         if (validateConsoleErrors)
             expect(propWarns.length).toEqual(0);
         expect.restoreSpies();
-        let testLog = ConsoleHelper.getLog();
-        if (testLog.length)
-            console.info(testLog);
     });
 });

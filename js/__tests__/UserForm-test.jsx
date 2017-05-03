@@ -37,7 +37,7 @@ describe("UserForm", function () {
                         statusCode: () => 200,
                         body: () => {
                             return {
-                                data: () => mockData
+                                data: () => JSON.parse(JSON.stringify(mockData))
                             }
                         },
                         headers: () => []
@@ -378,8 +378,5 @@ describe("UserForm", function () {
         if (validateConsoleErrors)
             expect(propWarns.length).toEqual(0);
         expect.restoreSpies();
-        let testLog = ConsoleHelper.getLog();
-        if (testLog.length)
-            console.info(testLog);
     });
 });

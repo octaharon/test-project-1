@@ -9,7 +9,7 @@ import MatchGroup from './MatchGroup';
 
 
 const propTypes = {
-    UUID: PropTypes.string
+    UUID: PropTypes.string.isRequired
 };
 
 /**
@@ -41,16 +41,23 @@ class GroupList extends React.Component {
             this.loadData(UUID);
     }
 
-    loadData(UUID) {
-        this.api.one('userconfig', UUID).get().then((response) => {
-            let data = response.body().data();
-            this.setState({
-                twitterGroups: data.twitterMatchGroups || [],
-                instagramGroups: data.instagramMatchGroups || []
-            });
+    onApiUpdate(response) {
+        if (response && response.statusCode() == '204')
+            console.log(`Autosave successful for ${this.props.UUID}`);
+    }
 
-        }).catch((err) => {
-            console.log(err);
+    onApiLoad(response) {
+        let data = response.body().data();
+        this.setState({
+            twitterGroups: data.twitterMatchGroups || [],
+            instagramGroups: data.instagramMatchGroups || []
+        });
+        console.log(`Loaded data for ${this.props.UUID}`);
+    }
+
+    loadData(UUID) {
+        this.api.one('userconfig', UUID).get().then(this.onApiLoad.bind(this)).catch((err) => {
+            console.error(err);
             alert("Connection error");
         });
     }
@@ -63,14 +70,17 @@ class GroupList extends React.Component {
             twitterMatchGroups: this.state.twitterGroups,
             instagramMatchGroups: this.state.instagramGroups
         };
-        this.api.one('userconfig', this.props.UUID).put(data).then(function (response) {
-            console.log('saved');
-        }.bind(this)).catch((err) => {
+        this.api.one('userconfig', this.props.UUID).put(data).then(this.onApiUpdate.bind(this)).catch((err) => {
             console.log(err);
             alert("Connection error");
         });
     }
 
+    /**
+     * @param groupKey string
+     * @param newData object {name, twInfluencers, igInfluencers, keywords}
+     * @returns {boolean}
+     */
     updateGroup(groupKey, newData = null) {
         let name = newData.name.trim();
         if (!name.length || this.groupExists(name) && name != groupKey)
@@ -166,7 +176,7 @@ class GroupList extends React.Component {
     }
 
     onGroupInfluencerChange(e) {
-        let newGroupInfluencer = e.target.value.trim();
+        let newGroupInfluencer = e.target.value.replace(/\s+/, '');
         this.setState({
             newGroupInfluencer,
             canAdd: this.canAdd(this.state.newGroupName, newGroupInfluencer)
@@ -216,7 +226,7 @@ class GroupList extends React.Component {
             let mergedGroup = _.findWhere(r, {name: group.name});
             if (mergedGroup !== undefined) {
                 mergedGroup.twitterList = group.influencers;
-                mergedGroup.keywords = _.uniq([...mergedGroup.keywords, ...group.keywords], false, str => str.toLocaleLowerCase())
+                mergedGroup.keywords = _.uniq([...mergedGroup.keywords, ...group.keywords], false, str => str.toLocaleLowerCase()).sort()
             }
             else
                 r.push({

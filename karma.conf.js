@@ -12,7 +12,7 @@ module.exports = function (config) {
         preprocessors: {
             'tests.webpack.js': ['webpack']
         },
-        reporters: ['dots'],
+        reporters: ['mocha', 'dots'],
         webpack: {
             module: {
                 loaders: [
@@ -28,6 +28,9 @@ module.exports = function (config) {
                     ENV_TEST: JSON.stringify(true)
                 })],
             watch: true
+        },
+        client: {
+            captureConsole: false
         },
         webpackServer: {
             noInfo: true
