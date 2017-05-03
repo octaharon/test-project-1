@@ -119,9 +119,7 @@ class MatchGroup extends React.Component {
 
     onNameChange(e) {
         let name = e.target.value.replace(/^\s+/, '');
-        if (!name.length)
-            return false;
-        this.setState({name, revalidate: true, invalid: false});
+        this.setState({name, revalidate: true, invalid: name.length==0});
     }
 
     removeGroup(e, force) {
